@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>General playlist 1</title>
-  <meta name="description" content="A clean, responsive webpage showcasing a Spotify playlist." />
+  <title>Kate’s Playlists</title>
+  <meta name="description" content="Interactive Spotify playlist showcase — click Surprise Me! to reveal a random mood." />
   <style>
     :root {
       --bg: #0f1115;
@@ -15,123 +15,160 @@
       --border: #23283a;
     }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html, body { height: 100%; margin: 0; }
     body {
-      margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
       background: radial-gradient(80% 80% at 50% 0%, #121522, #0b0d12);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
     header {
       display: grid; gap: 10px; align-items: start; justify-items: start;
       grid-template-columns: 1fr auto; 
-      border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px;
+      border-bottom: 1px solid var(--border); 
+      padding-bottom: 16px; 
+      margin-bottom: 24px;
     }
+
     h1 { font-size: clamp(1.6rem, 2.5vw, 2.2rem); margin: 0; letter-spacing: .3px; }
+    h2.sec-title { font-size: 1.1rem; margin-top: 24px; margin-bottom: 8px; letter-spacing: .2px; }
+
     .muted { color: var(--muted); font-size: .95rem; }
+
     .pill {
       border: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
       padding: 8px 12px; border-radius: 999px; color: var(--text);
     }
+
     .card {
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border: 1px solid var(--border);
-      border-radius: 16px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      border-radius: 16px; 
+      padding: 18px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      margin-bottom: 24px;
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
-    .grid { display: grid; gap: 18px; }
-    @media (min-width: 900px){ .grid { grid-template-columns: 1.15fr .85fr; } }
 
-    .sec-title { font-size: 1.05rem; letter-spacing: .2px; margin: 0 0 8px; }
-    .about p { margin: 0 0 10px; }
-    .list { list-style: none; padding: 0; margin: 0; }
-    .list li {
-      padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px;
-      display: flex; align-items: center; gap: 10px;
-      background: rgba(0,0,0,.15);
+    .hidden {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      position: absolute;
+      height: 0;
+      overflow: hidden;
     }
-    .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--accent); opacity: .9; }
+
     .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .row a { color: var(--accent); text-decoration: none; }
     .row a:hover { text-decoration: underline; }
-    .cta {
+
+    .cta, .surprise {
       display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
-      background: var(--accent); color: #0b0d12; border: 0; border-radius: 999px; padding: 10px 14px; font-weight: 600;
+      background: var(--accent); color: #0b0d12; border: 0; border-radius: 999px; 
+      padding: 10px 14px; font-weight: 600;
       box-shadow: 0 10px 20px rgba(110,168,254,.25);
+      transition: transform 0.15s ease, background 0.2s ease;
     }
-    footer { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 16px; color: var(--muted); font-size: .9rem; }
-    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .9em; }
-    .note { font-size: .9rem; color: var(--muted); margin-top: 8px; }
+    .cta:hover, .surprise:hover { transform: translateY(-1px); background: #8dbbff; }
+
+    footer {
+      margin-top: 28px; 
+      border-top: 1px solid var(--border); 
+      padding-top: 16px; 
+      color: var(--muted); 
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    .note { font-size: .9rem; color: var(--muted); margin-top: 8px; text-align: center; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div>
-        <div class="pill">Spotify Playlist</div>
-        <h1 id="title">ADULT</h1>
-        <p class="muted">Hand-picked tracks that range from chilld vibes to bad ass main character energies</p>
+        <div class="pill">Spotify Playlists</div>
+        <h1 id="title">Kate’s Playlists</h1>
+        <p class="muted">Click “Surprise Me!” and let fate choose your vibe 🎲</p>
       </div>
-      <button class="cta" id="copyLink" title="Copy playlist link">Copy Link</button>
+      <button class="surprise" id="surpriseMe">🎧 Surprise Me!</button>
     </header>
 
-    <main class="grid">
-      <!-- Spotify embed -->
-        <h2 class="sec-title">Try to dance?</h2>
-      <section class="card" aria-label="Playlist player">
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2CbHm5VdfaHtagaos0661C?utm_source=generator" width="100%" height="392" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <main>
+      <!-- Playlist 1 -->
+      <h2 class="sec-title">💃 Try to Dance?</h2>
+      <section class="card playlist" id="dance">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2CbHm5VdfaHtagaos0661C?utm_source=generator" 
+          width="100%" height="392" frameborder="0" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+        </iframe>
       </section>
 
-      <h2 class="sec-title">Scream it out!</h2>
-      <section class="card" aria-label="Playlist player">
-  <iframe style="border-radius:12px" src="https://open.spotify.com/playlist/34lbQNg41HLMflbRTBgWte?si=96b3913aed594923" width="100%" height="392" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <!-- Playlist 2 -->
+      <h2 class="sec-title">🎤 Scream It Out!</h2>
+      <section class="card playlist" id="scream">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/34lbQNg41HLMflbRTBgWte?utm_source=generator" 
+          width="100%" height="392" frameborder="0" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+        </iframe>
       </section>
-        
-       <h2 class="sec-title">Trip hop</h2>
-      <section class="card" aria-label="Playlist player">
-  <iframe style="border-radius:12px" src="https://open.spotify.com/playlist/4aq8RdgIQa1enrSgTgLkFo?si=75d42d13e324429c" width="100%" height="392" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-</section>
-      
-      <!-- About + (optional) track highlights -->
-      <section class="card about" aria-label="About this playlist">
-        <h2 class="sec-title">About this playlist</h2>
-        <p>Moments when you want to be a wlaking contradiciton.</p>
-        <p class="muted">Turn the car on, dial the volume all the way up and feel it.</p>
 
+      <!-- Playlist 3 -->
+      <h2 class="sec-title">🌒 Trip Hop</h2>
+      <section class="card playlist" id="trip">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4aq8RdgIQa1enrSgTgLkFo?utm_source=generator" 
+          width="100%" height="392" frameborder="0" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+        </iframe>
+      </section>
+
+      <!-- Playlist 4 -->
+      <h2 class="sec-title">🔥 Steamy Times</h2>
+      <section class="card playlist" id="steamy">
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/YOUR_PLAYLIST_ID_HERE?utm_source=generator" 
+          width="100%" height="392" frameborder="0" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+        </iframe>
+      </section>
+
+      <!-- About section -->
+      <section class="card about">
+        <h2 class="sec-title">About These Playlists</h2>
+        <p>Every mood deserves a soundtrack — sometimes you dance, sometimes you scream, sometimes you just melt into the music.</p>
+        <p class="muted">Click “Surprise Me!” and see where the rhythm takes you.</p>
+      </section>
     </main>
 
-    <section class="card" style="margin-top: 18px;" aria-label="Quick actions">
-      <div class="row">
-        <a class="pill" href="https://open.spotify.com/playlist/2CbHm5VdfaHtagaos0661C" target="_blank" rel="noopener">Open in Spotify</a>
-        <a class="pill" href="https://open.spotify.com/playlist/2CbHm5VdfaHtagaos0661C?si=433d542934874c3a" target="_blank" rel="noopener">Open (with share param)</a>
-        <span class="pill kbd">⌘/Ctrl + D to bookmark</span>
-      </div>
-    </section>
-
     <footer>
-      Made with ♥ to showcase a playlist.
+      Made with ♥ by Kate — music for every mood.
     </footer>
   </div>
 
   <script>
-    // Set your playlist title here if you like
-    document.getElementById('title').textContent = 'Kate\'s Playlist';
+    const playlists = document.querySelectorAll('.playlist');
+    const surpriseBtn = document.getElementById('surpriseMe');
 
-    // Copy link to clipboard
-    const copyBtn = document.getElementById('copyLink');
-    copyBtn.addEventListener('click', async () => {
-      const url = 'https://open.spotify.com/playlist/2CbHm5VdfaHtagaos0661C?si=433d542934874c3a';
-      try {
-        await navigator.clipboard.writeText(url);
-        copyBtn.textContent = 'Link copied!';
-        setTimeout(() => (copyBtn.textContent = 'Copy Link'), 1600);
-      } catch (e) {
-        window.prompt('Copy this link:', url);
-      }
+    surpriseBtn.addEventListener('click', () => {
+      // Hide all playlists first
+      playlists.forEach(p => p.classList.add('hidden'));
+
+      // Pick a random one
+      const randomIndex = Math.floor(Math.random() * playlists.length);
+      const randomPlaylist = playlists[randomIndex];
+
+      // Show it again
+      setTimeout(() => {
+        randomPlaylist.classList.remove('hidden');
+      }, 300);
+
+      // Fun button animation
+      surpriseBtn.textContent = "🎲 Shuffling...";
+      setTimeout(() => (surpriseBtn.textContent = "🎧 Surprise Me!"), 1200);
     });
   </script>
 </body>
